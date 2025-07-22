@@ -5,6 +5,7 @@ import AboutSection from "@/components/AboutSection";
 import TeamSection from "@/components/TeamSection";
 import WhatWeDoSection from "@/components/WhatWeDoSection";
 import Footer from "@/components/Footer";
+import VoiceChat from "@/components/VoiceChat";
 
 const Index = () => {
   return (
@@ -16,6 +17,7 @@ const Index = () => {
       <WhatWeDoSection />
       <TeamSection />
       <Footer />
+      <VoiceChat />
     </div>
   );
 };
