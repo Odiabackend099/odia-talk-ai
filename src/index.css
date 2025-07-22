@@ -38,12 +38,15 @@ All colors MUST be HSL.
 
     --radius: 0.5rem;
     
-    /* Custom ODIA design tokens */
-    --navy-bg: 210 100% 14%;
-    --gold-accent: 45 100% 50%;
+    /* Custom ODIA design tokens - IEQ Capital inspired blue gradient */
+    --navy-bg: 213 47% 23%;
+    --navy-light: 213 47% 35%;
+    --navy-deep: 213 47% 15%;
+    --gold-accent: 43 74% 49%;
     --green-primary: 151 78% 26%;
     --text-light: 0 0% 98%;
-    --overlay-dark: 210 11% 15% / 0.8;
+    --overlay-dark: 213 47% 15% / 0.8;
+    --blue-gradient: linear-gradient(135deg, hsl(213 47% 35%), hsl(213 47% 15%));
 
     --sidebar-background: 0 0% 98%;
 

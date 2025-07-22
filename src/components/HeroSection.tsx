@@ -5,12 +5,12 @@ const HeroSection = () => {
   return (
     <section 
       id="home"
-      className="min-h-screen relative bg-navy text-text-light flex items-center justify-center"
+      className="min-h-screen relative text-text-light flex items-center justify-center"
       style={{
-        backgroundImage: `linear-gradient(rgba(33, 37, 86, 0.8), rgba(33, 37, 86, 0.8)), url(${heroImage})`,
+        background: `linear-gradient(135deg, hsl(213 47% 35%) 0%, hsl(213 47% 25%) 50%, hsl(213 47% 15%) 100%), url(${heroImage})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
+        backgroundBlendMode: 'overlay'
       }}
     >
       <div className="max-w-7xl mx-auto px-6 text-center z-10">

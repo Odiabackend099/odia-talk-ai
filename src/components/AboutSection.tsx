@@ -3,7 +3,7 @@ import voiceWave from "@/assets/voice-wave.jpg";
 
 const AboutSection = () => {
   return (
-    <section className="py-20 bg-navy text-text-light">
+    <section className="py-20 bg-navy-deep text-text-light">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <p className="text-sm uppercase tracking-wider mb-4 text-gold">

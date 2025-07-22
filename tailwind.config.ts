@@ -53,6 +53,8 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				navy: 'hsl(var(--navy-bg))',
+				'navy-light': 'hsl(var(--navy-light))',
+				'navy-deep': 'hsl(var(--navy-deep))',
 				gold: 'hsl(var(--gold-accent))',
 				green: 'hsl(var(--green-primary))',
 				'text-light': 'hsl(var(--text-light))',
