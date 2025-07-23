@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ODIA Widget Integration Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .example-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .integration-steps {
+            background-color: #e8f4f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="example-content">
+        <h1>ODIA Voice Chat Widget Integration</h1>
+        
+        <div class="integration-steps">
+            <h2>Quick Integration Steps:</h2>
+            <ol>
+                <li>Add the container div to your HTML page</li>
+                <li>Include the widget script</li>
+                <li>Configure your ElevenLabs API key (optional)</li>
+            </ol>
+        </div>
+
+        <h3>Step 1: Add Container</h3>
+        <div class="code-block">
+            &lt;div id="odia-chat-container"&gt;&lt;/div&gt;
+        </div>
+
+        <h3>Step 2: Include Widget Script</h3>
+        <div class="code-block">
+            &lt;script src="https://your-domain.com/dist/widget/widget.js" type="module"&gt;&lt;/script&gt;
+        </div>
+
+        <h3>Complete Example:</h3>
+        <div class="code-block">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Your Website&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Your website content --&gt;
+    &lt;h1&gt;Welcome to Your Website&lt;/h1&gt;
+    &lt;p&gt;Your content here...&lt;/p&gt;
+    
+    &lt;!-- ODIA Widget Container --&gt;
+    &lt;div id="odia-chat-container"&gt;&lt;/div&gt;
+    
+    &lt;!-- ODIA Widget Script --&gt;
+    &lt;script src="https://your-domain.com/dist/widget/widget.js" type="module"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </div>
+
+        <h3>Configuration (Optional):</h3>
+        <div class="code-block">
+&lt;script&gt;
+    // Optional: Configure before loading
+    window.ODIAConfig = {
+        apiKey: 'your-elevenlabs-api-key',
+        agentId: 'your-agent-id'
+    };
+&lt;/script&gt;
+        </div>
+
+        <p><strong>Note:</strong> The widget will appear as a floating chat button in the bottom-right corner of your website. Users can click it to start a voice conversation with your AI agent.</p>
+    </div>
+
+    <!-- Demo: The actual widget -->
+    <div id="odia-chat-container"></div>
+    <script src="/dist/widget/widget.js" type="module"></script>
+</body>
+</html>

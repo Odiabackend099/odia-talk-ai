@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ODIA Voice Chat Widget</title>
+    <style>
+        .odia-widget {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            z-index: 9999;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        
+        /* Prevent conflicts with parent site styles */
+        .odia-widget * {
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <script type="module">
+        // Import and initialize the widget
+        import('./widget.js').then(() => {
+            console.log('ODIA Voice Chat Widget loaded successfully');
+        }).catch(error => {
+            console.error('Failed to load ODIA Voice Chat Widget:', error);
+        });
+    </script>
+</body>
+</html>
