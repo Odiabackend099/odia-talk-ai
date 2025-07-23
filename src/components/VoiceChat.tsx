@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useConversation } from '@11labs/react';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Phone, PhoneOff, MessageCircle, X, Send, Volume2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Message {
   id: string;
@@ -17,8 +19,13 @@ const VoiceChat = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Default demo agent ID - users should replace this with their actual agent ID
+  const DEMO_AGENT_ID = 'your-elevenlabs-agent-id';
 
   const conversation = useConversation({
     onConnect: () => {
@@ -27,16 +34,17 @@ const VoiceChat = () => {
         description: "Voice agent is ready to chat",
       });
       addMessage('ai', 'Hello! I\'m your ODIA voice assistant. How can I help you today?');
+      setIsConnecting(false);
     },
     onDisconnect: () => {
       toast({
         title: "Disconnected",
         description: "Voice conversation ended",
       });
+      setIsConnecting(false);
     },
     onMessage: (message: any) => {
       console.log('Received message:', message);
-      // Handle different message formats from ElevenLabs
       if (typeof message === 'string') {
         addMessage('ai', message);
       } else if (message && message.content) {
@@ -44,11 +52,13 @@ const VoiceChat = () => {
       }
     },
     onError: (error: any) => {
+      console.error('Conversation error:', error);
       toast({
         title: "Connection Error",
         description: error?.message || "Failed to connect to voice agent",
         variant: "destructive",
       });
+      setIsConnecting(false);
     }
   });
 
@@ -64,36 +74,91 @@ const VoiceChat = () => {
 
   const startVoiceConversation = async () => {
     try {
+      setIsConnecting(true);
+      
       // Request microphone permission first
       await navigator.mediaDevices.getUserMedia({ audio: true });
       
-      // You'll need to replace this with your actual ElevenLabs agent ID
-      const demoAgentId = 'your-agent-id-here';
-      await conversation.startSession({ agentId: demoAgentId });
-    } catch (error) {
-      toast({
-        title: "Microphone Access Required",
-        description: "Please allow microphone access to use voice features",
-        variant: "destructive",
+      // Get signed URL from our secure backend
+      const { data, error } = await supabase.functions.invoke('elevenlabs-conversation', {
+        body: {
+          action: 'get_signed_url',
+          agentId: DEMO_AGENT_ID
+        }
       });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (!data?.signed_url) {
+        throw new Error('Failed to get signed URL from backend');
+      }
+
+      console.log('Using signed URL:', data.signed_url);
+      
+      // Start conversation with signed URL
+      await conversation.startSession({ url: data.signed_url });
+      
+    } catch (error) {
+      console.error('Error starting voice conversation:', error);
+      setIsConnecting(false);
+      
+      if (error instanceof Error && error.message.includes('Permission denied')) {
+        toast({
+          title: "Microphone Access Required",
+          description: "Please allow microphone access to use voice features",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Connection Failed",
+          description: error instanceof Error ? error.message : "Failed to start voice conversation",
+          variant: "destructive",
+        });
+      }
     }
   };
 
   const endVoiceConversation = async () => {
-    await conversation.endSession();
+    try {
+      await conversation.endSession();
+      setConversationId(null);
+    } catch (error) {
+      console.error('Error ending conversation:', error);
+    }
   };
 
-  const sendTextMessage = () => {
+  const sendTextMessage = async () => {
     if (!inputText.trim()) return;
     
     addMessage('user', inputText);
-    // In a real implementation, you'd send this to your AI service
-    // For now, we'll simulate an AI response
-    setTimeout(() => {
-      addMessage('ai', `Thank you for your message: "${inputText}". I'm a demo response from ODIA AI. To enable full functionality, please configure your ElevenLabs agent ID.`);
-    }, 1000);
-    
+    const userMessage = inputText;
     setInputText('');
+
+    try {
+      // Send message through our secure backend
+      const { data, error } = await supabase.functions.invoke('elevenlabs-conversation', {
+        body: {
+          action: 'send_message',
+          conversationId: conversationId,
+          message: userMessage
+        }
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      // For demo purposes, show a response
+      setTimeout(() => {
+        addMessage('ai', `Thank you for your message: "${userMessage}". I'm processing this through the secure ODIA backend. To enable full voice functionality, please configure your ElevenLabs agent ID in the code.`);
+      }, 1000);
+
+    } catch (error) {
+      console.error('Error sending message:', error);
+      addMessage('ai', 'Sorry, I encountered an error processing your message. Please try again.');
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -139,7 +204,9 @@ const VoiceChat = () => {
                 <div>
                   <h3 className="text-text-light font-semibold">ODIA Voice Agent</h3>
                   <p className="text-text-light/60 text-xs">
-                    {status === 'connected' ? 'Online' : 'Ready to connect'}
+                    {status === 'connected' ? 'Connected' : 
+                     isConnecting ? 'Connecting...' : 
+                     'Ready to connect'}
                   </p>
                 </div>
               </div>
@@ -161,9 +228,10 @@ const VoiceChat = () => {
                     onClick={startVoiceConversation}
                     className="bg-green hover:bg-green/90 text-white"
                     size="sm"
+                    disabled={isConnecting}
                   >
                     <Phone className="w-4 h-4 mr-2" />
-                    Start Voice Chat
+                    {isConnecting ? 'Connecting...' : 'Start Voice Chat'}
                   </Button>
                 ) : (
                   <Button
@@ -234,7 +302,7 @@ const VoiceChat = () => {
                 </Button>
               </div>
               <p className="text-xs text-text-light/60 mt-2 text-center">
-                Press Enter to send • Voice chat requires ElevenLabs setup
+                Press Enter to send • Secure backend integration active
               </p>
             </div>
           </Card>
